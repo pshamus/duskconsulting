@@ -11,7 +11,7 @@ pygmentsCodefencesGuessSyntax = true
 #pygmentsUseClassic = true
 #pygmentOptions = "linenos=inline"
 #disqusShortname = "XXX"
-#googleAnalytics = "XXX"
+googleAnalytics = "UA-136802204-1"
 
 [Params]
   #homeTitle = "Dusk Consulting" # Set a different text for the header on the home page
