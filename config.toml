@@ -1,7 +1,7 @@
 baseurl = "https://pshamus.github.io"
 DefaultContentLanguage = "en"
 #DefaultContentLanguage = "ja"
-title = "Dusk Consulting"
+title = "Home"
 theme = "beautifulhugo"
 metaDataFormat = "yaml"
 pygmentsStyle = "trac"
@@ -14,7 +14,7 @@ pygmentsCodefencesGuessSyntax = true
 #googleAnalytics = "XXX"
 
 [Params]
-#  homeTitle = "Beautiful Hugo Theme" # Set a different text for the header on the home page
+  homeTitle = "Dusk Consulting" # Set a different text for the header on the home page
   subtitle = "Automating the world, one solution at a time"
   logo = "/images/dusk-logo.jpg" # Expecting square dimensions
   favicon = "/images/favicon.ico"
@@ -67,11 +67,6 @@ pygmentsCodefencesGuessSyntax = true
 #  paypal = "username"
 #  telegram = "username"
 #  500px = "username"
-
-[[menu.main]]
-    name = "Blog"
-    url = ""
-    weight = 1
 
 [[menu.main]]
     name = "About"
