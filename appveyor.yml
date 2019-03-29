@@ -23,6 +23,7 @@ install:
 build_script:
   - ps: hugo version
   - ps: hugo -t beautifulhugo
+  - ps: Get-ChildItem -Path .\public
 
 #---------------------------------#
 #     deployment configuration    #
@@ -31,6 +32,5 @@ deploy_script:
   - cd public
   - git add .
   - ps: $commitMessage = "Rebuilding site $(Get-Date -Format R)"
-  - ps: $commitMessage
-  - git commit -m "$msg"
+  - ps: git commit -m "$commitMessage"
   - git push origin master
