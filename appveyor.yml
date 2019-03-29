@@ -44,6 +44,7 @@ deploy_script:
   - git status
   - git push origin master
   - cd ..
+  - git checkout master
   - git add public
   - ps: git commit -m "$commitMessage - [skip ci]"
   - git push origin master

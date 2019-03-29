@@ -15,7 +15,7 @@ Fast forward 23 years, and I have gone from desktop support to system administra
 
 And now I want to share what I have learned over the years. I would not be where I am now without countless people helping and teaching me along the way, especially my dad...which leads me to the name of my blog: Dusk Consulting. My dad was a musician and when I was very young (0-4 years) had a band named Dusk and a recording studio called Dusk Recording Studios. He had license plates that said DUSK and DUSK 24 that I always admired. After he passed in 1998, I decided that at some point I would honor him in some fashion, and I am proud to finally make that happen with this blog.
 
-![](../images/dad-behind-the-scenes.jpg "My dad, Larry Shamus Jr., behind the scenes at Dusk Recording Studios")
+![My dad, Larry Shamus Jr., behind the scenes at Dusk Recording Studios](../images/dad-behind-the-scenes.jpg "My dad, Larry Shamus Jr., behind the scenes at Dusk Recording Studios")
 <p style="text-align: center;">My dad, Larry Shamus Jr., behind the scenes at Dusk Recording Studios</p>
 
 ![Dusk - The Band](../images/dusk-the-band.jpg "Dusk - The Band")
