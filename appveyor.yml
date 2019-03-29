@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 0.0.{build}
 
 #---------------------------------#
 #    environment configuration    #
@@ -10,14 +10,12 @@ environment:
     secure: G0C3USmQ/x2d5wgpUOhYEe/leoYgdCDwW0yKJJuHBwjkNAlIelY7JgPJGJCCDZi/
 
 install:
-  - cmd: git submodule update --init --recursive
+  - git submodule update --init --recursive
   - ps: choco install hugo
   - git config --global credential.helper store
   - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
   - git config --global user.email "paul@duskcs.com"
   - git config --global user.name "Paul Shamus"
-  - ps: Get-ChildItem -Path $Env:APPVEYOR_BUILD_FOLDER
-  - ps: Get-ChildItem -Path $Env:APPVEYOR_BUILD_FOLDER\public
 
 #---------------------------------#
 #       build configuration       #
@@ -30,9 +28,9 @@ build_script:
 #     deployment configuration    #
 #---------------------------------#
 deploy_script:
-  - ps: Set-Location -Path public
+  - cd public
   - git add .
   - ps: $commitMessage = "Rebuilding site $(Get-Date -Format R)"
-  - ps: Write-Outout $commitMessage
+  - ps: $commitMessage
   - git commit -m "$msg"
   - git push origin master
