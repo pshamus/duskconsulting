@@ -16,8 +16,8 @@ googleAnalytics = "UA-136802204-1"
 [Params]
   #homeTitle = "Dusk Consulting" # Set a different text for the header on the home page
   subtitle = "Automating the world, one solution at a time"
-  logo = "/images/dusk-logo.jpg" # Expecting square dimensions
-  favicon = "/images/favicon.ico"
+  logo = "dusk-logo.jpg" # Expecting square dimensions
+  favicon = "favicon.ico"
   dateFormat = "January 2, 2006"
   commit = false
   rss = true
