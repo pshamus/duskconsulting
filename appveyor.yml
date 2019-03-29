@@ -11,6 +11,7 @@ environment:
 
 install:
   - git submodule update --init --recursive
+  - git submodule update --checkout public
   - ps: choco install hugo
   - git config --global credential.helper store
   - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
