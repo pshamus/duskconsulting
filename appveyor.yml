@@ -1,0 +1,35 @@
+version: 1.0.{build}
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+image: WMF 5
+
+environment:
+  access_token:
+    secure: G0C3USmQ/x2d5wgpUOhYEe/leoYgdCDwW0yKJJuHBwjkNAlIelY7JgPJGJCCDZi/
+
+install:
+  - ps: choco install hugo
+  - git config --global credential.helper store
+  - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+  - git config --global user.email "paul@duskcs.com"
+  - git config --global user.name "Paul Shamus"
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+build_script:
+  - ps: hugo version
+  - ps: hugo -t beautifulhugo
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+deploy_script:
+  - ps: Set-Location -Path public
+  - git add .
+  - ps: $commitMessage = "Rebuilding site $(Get-Date -Format R)"
+  - ps: Write-Outout $commitMessage
+  - git commit -m "$msg"
+  - git push origin master
