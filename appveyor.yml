@@ -1,3 +1,6 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
 version: 0.0.{build}
 
 #---------------------------------#
@@ -11,7 +14,9 @@ environment:
 
 install:
   - git submodule update --init --recursive
-  - git submodule update --checkout public
+  - cd public
+  - git checkout master
+  - cd ..
   - ps: choco install hugo
   - git config --global credential.helper store
   - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
@@ -31,7 +36,14 @@ build_script:
 #---------------------------------#
 deploy_script:
   - cd public
+  - git status
   - git add .
+  - git status
   - ps: $commitMessage = "Rebuilding site $(Get-Date -Format R)"
   - ps: git commit -m "$commitMessage"
+  - git status
+  - git push origin master
+  - cd ..
+  - git add public
+  - ps: git commit -m "$commitMessage - [skip ci]"
   - git push origin master
