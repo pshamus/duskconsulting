@@ -19,6 +19,7 @@ googleAnalytics = "UA-136802204-1"
   logo = "dusk-logo.jpg" # Expecting square dimensions
   favicon = "favicon.ico"
   dateFormat = "January 2, 2006"
+  selfHosted = false
   commit = false
   rss = true
   comments = true

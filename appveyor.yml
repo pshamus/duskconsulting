@@ -9,8 +9,10 @@ version: 0.0.{build}
 image: WMF 5
 
 environment:
-  access_token:
+  github_access_token:
     secure: G0C3USmQ/x2d5wgpUOhYEe/leoYgdCDwW0yKJJuHBwjkNAlIelY7JgPJGJCCDZi/
+  cloudflare_api_key:
+    secure: ydtOZVhhRRgu2IjG3r0vMtg+yizONRxwVwNYgrQ4T1t+RcZrO/7TxDQ7V95PxO7x
 
 install:
   - git submodule update --init --recursive
@@ -19,7 +21,7 @@ install:
   - cd ..
   - ps: choco install hugo
   - git config --global credential.helper store
-  - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+  - ps: Add-Content "$HOME\.git-credentials" "https://$($Env:github_access_token):x-oauth-basic@github.com`n"
   - git config --global user.email "paul@duskcs.com"
   - git config --global user.name "Paul Shamus"
 
@@ -28,6 +30,7 @@ install:
 #---------------------------------#
 build_script:
   - ps: hugo version
+  - ps: Set-Content -Path .\content\version -Value $Env:APPVEYOR_BUILD_VERSION
   - ps: hugo -t beautifulhugo
   - ps: Get-ChildItem -Path .\public
 
@@ -48,3 +51,9 @@ deploy_script:
   - git add public
   - ps: git commit -m "$commitMessage - [skip ci]"
   - git push origin master
+
+after_deploy:
+  - ps: 'Purging Cloudflare CDN cache'
+  - ps: $headers = @{'X-Auth-Email' = 'paul@duskcs.com'; 'X-Auth-Key' = "$($Env:cloudflare_api_key)"; 'Content-Type' = 'application/json' }
+  - ps: $zoneId = (Invoke-RestMethod -Uri 'https://api.cloudflare.com/client/v4/zones?name=duskcs.com' -Headers $headers).result.id
+  - ps: Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$zoneId/purge_cache" -Method Post -Headers $headers -Body '{"purge_everything":true}'
