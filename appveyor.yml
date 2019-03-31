@@ -15,7 +15,7 @@ environment:
     secure: ydtOZVhhRRgu2IjG3r0vMtg+yizONRxwVwNYgrQ4T1t+RcZrO/7TxDQ7V95PxO7x
 
 install:
-  - ps: |
+  - pwsh: |
       $ErrorActionPreference = 'Stop'
 
       # Force update any submodules. We need this so we can merge any changes to public.
@@ -41,7 +41,9 @@ install:
 #       build configuration       #
 #---------------------------------#
 build_script:
-  - ps: |
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+
       hugo version
 
       # Store the current build version which will be displayed on the website footer.
@@ -54,7 +56,9 @@ build_script:
 #     deployment configuration    #
 #---------------------------------#
 deploy_script:
-  - ps: |
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+
       Write-Host "Staging updated website content"
       Set-Location -Path .\public
       git status
@@ -75,7 +79,9 @@ deploy_script:
       git push origin master
 
 after_deploy:
-  - ps: |
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+
       Write-Host "Purging Cloudflare CDN cache"
       $headers = @{
           'X-Auth-Email' = 'paul@duskcs.com';
