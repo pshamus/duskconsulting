@@ -15,45 +15,76 @@ environment:
     secure: ydtOZVhhRRgu2IjG3r0vMtg+yizONRxwVwNYgrQ4T1t+RcZrO/7TxDQ7V95PxO7x
 
 install:
-  - git submodule update --init --recursive
-  - cd public
-  - git checkout master
-  - cd ..
-  - ps: choco install hugo
-  - git config --global credential.helper store
-  - ps: Add-Content "$HOME\.git-credentials" "https://$($Env:github_access_token):x-oauth-basic@github.com`n"
-  - git config --global user.email "paul@duskcs.com"
-  - git config --global user.name "Paul Shamus"
+  - ps: |
+      $ErrorActionPreference = 'Stop'
+
+      # Force update any submodules. We need this so we can merge any changes to public.
+      git submodule update --init --recursive
+
+      # Checkout the public submodule master branch so it won't be deteached.
+      Set-Location -Path .\public
+      git checkout master
+
+      # Return back to the project root which is where we will build the website from.
+      Set-Location -Path ..\
+
+      # Install hugo via Chocolatey.
+      choco install hugo
+
+      # Configure git so we can commit submodule changes back to GitHub.
+      git config --global credential.helper store
+      Set-Content -Path "$HOME\.git-credentials" -Value "https://$($Env:github_access_token):x-oauth-basic@github.com`n"
+      git config --global user.email "paul@duskcs.com"
+      git config --global user.name "Paul Shamus"
 
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
 build_script:
-  - ps: hugo version
-  - ps: Set-Content -Path .\content\version -Value $Env:APPVEYOR_BUILD_VERSION
-  - ps: hugo -t beautifulhugo
-  - ps: Get-ChildItem -Path .\public
+  - ps: |
+      hugo version
+
+      # Store the current build version which will be displayed on the website footer.
+      Set-Content -Path .\content\version -Value $Env:APPVEYOR_BUILD_VERSION
+
+      # Generate updated website content.
+      hugo -t beautifulhugo
 
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
 deploy_script:
-  - cd public
-  - git status
-  - git add .
-  - git status
-  - ps: $commitMessage = "Rebuilding site $(Get-Date -Format R)"
-  - ps: git commit -m "$commitMessage"
-  - git status
-  - git push origin master
-  - cd ..
-  - git checkout master
-  - git add public
-  - ps: git commit -m "$commitMessage - [skip ci]"
-  - git push origin master
+  - ps: |
+      Write-Host "Staging updated website content"
+      Set-Location -Path .\public
+      git status
+      git add .
+      git status
+
+      Write-Host "Committing website content"
+      $commitMessage = "Rebuilding site $(Get-Date -Format R)"
+      git commit -m "$commitMessage"
+      git status
+      git push origin master
+
+      Write-Host "Committing parent repository submodule checksum changes"
+      Set-Location -Path ..\
+      git checkout master
+      git add public
+      git commit -m "$commitMessage - [skip ci]"
+      git push origin master
 
 after_deploy:
-  - ps: 'Purging Cloudflare CDN cache'
-  - ps: $headers = @{'X-Auth-Email' = 'paul@duskcs.com'; 'X-Auth-Key' = "$($Env:cloudflare_api_key)"; 'Content-Type' = 'application/json' }
-  - ps: $zoneId = (Invoke-RestMethod -Uri 'https://api.cloudflare.com/client/v4/zones?name=duskcs.com' -Headers $headers).result.id
-  - ps: Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$zoneId/purge_cache" -Method Post -Headers $headers -Body '{"purge_everything":true}'
+  - ps: |
+      Write-Host "Purging Cloudflare CDN cache"
+      $headers = @{
+          'X-Auth-Email' = 'paul@duskcs.com';
+          'X-Auth-Key' = "$($Env:cloudflare_api_key)";
+          'Content-Type' = 'application/json'
+      }
+
+      # Retrieve zone ID.
+      $zoneId = (Invoke-RestMethod -Uri 'https://api.cloudflare.com/client/v4/zones?name=duskcs.com' -Headers $headers).result.id
+
+      # Purge the Cloudflare CDN cache.
+      Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$zoneId/purge_cache" -Method Post -Headers $headers -Body '{"purge_everything":true}'
