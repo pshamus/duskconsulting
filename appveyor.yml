@@ -95,7 +95,7 @@ after_deploy:
       }
 
       # Retrieve zone ID.
-      $zoneId = (Invoke-RestMethod -Uri 'https://api.cloudflare.com/client/v4/zones?name=duskcs.com' -Headers $headers).result.id
+      $zoneId = (Invoke-RestMethod -Uri 'https://api.cloudflare.com/client/v4/zones?name=duskconsulting.com' -Headers $headers).result.id
 
       # Purge the Cloudflare CDN cache.
       Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$zoneId/purge_cache" -Method Post -Headers $headers -Body '{"purge_everything":true}'
